@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JIITLost&Found</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-start">
+  <!-- Header -->
+  <header class="w-full bg-blue-800 py-6 shadow-md animate-fade-in-down">
+    <h1 class="text-3xl md:text-4xl text-white font-bold text-center tracking-wide drop-shadow-lg">JIITLost&Found</h1>
+    <p class="text-center text-blue-100 mt-2 text-lg italic animate-pulse">Jaypee Institute of Information Technology Campus Lost & Found</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex flex-col items-center mt-12 w-full max-w-md px-4 animate-fade-in-up">
+    <!-- Welcome Section -->
+    <section class="mb-8 text-center">
+      <h2 class="text-2xl font-semibold mb-2">Welcome!</h2>
+      <p class="text-gray-700">Connecting JIIT students to reunite lost and found items on campus. Report, search, and help your community!</p>
+    </section>
+
+    <!-- Search Bar Section -->
+    <section class="w-full flex flex-col items-center mb-8">
+      <form class="flex flex-col md:flex-row gap-2 w-full bg-white rounded-lg shadow p-2 md:p-3 items-center justify-center">
+        <input type="text" placeholder="Search lost/found items…" class="flex-1 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800" />
+        <select class="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 font-semibold">
+          <option>All Campus</option>
+          <option>Block A</option>
+          <option>Block B</option>
+          <option>Block C</option>
+          <option>Block D</option>
+        </select>
+        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex items-center transition duration-200 focus:ring-4 focus:ring-red-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+          <span class="hidden md:inline">Search</span>
+        </button>
+        <button type="button" id="openFoundModal" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-md font-semibold text-sm transition duration-200 ml-0 md:ml-2 whitespace-nowrap border border-gray-300 shadow-sm">I've found something!</button>
+      </form>
+    </section>
+
+    <!-- Report Found Item Modal -->
+    <div id="foundModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden transition-opacity duration-300">
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative animate-fade-in-up">
+        <button id="closeFoundModal" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+        <h2 class="text-xl font-semibold mb-4 text-center">Report Found Item</h2>
+        <form id="foundForm" class="flex flex-col gap-4">
+          <input type="text" placeholder="Item Name" class="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <textarea placeholder="Description" class="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none" rows="3" required></textarea>
+          <select class="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+            <option value="">Select Location</option>
+            <option>All Campus</option>
+            <option>Block A</option>
+            <option>Block B</option>
+            <option>Block C</option>
+            <option>Block D</option>
+          </select>
+          <input type="date" class="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <input type="file" accept="image/*" class="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <input type="text" placeholder="Your Contact Info (email/phone)" class="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md shadow transition duration-200">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded shadow-lg z-50 hidden transition-opacity duration-300">Item reported successfully!</div>
+
+    <!-- Item List Section -->
+    <section class="mt-10 w-full max-w-2xl mx-auto" id="itemList">
+      <!-- Found items will be rendered here -->
+    </section>
+  </main>
+  
+  <!-- Custom Animations -->
+  <style>
+    @keyframes fade-in-down {
+      0% { opacity: 0; transform: translateY(-30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-down {
+      animation: fade-in-down 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+    @keyframes fade-in-up {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+      animation: fade-in-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+  </style>
+  <script src="script.js"></script>
+</body>
+</html> 
